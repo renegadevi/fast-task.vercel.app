@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+    <title>Minipad - A fast and lightweight modern recreation of the classic Win32 notepad, with tabs and line numbers</title>
+    <style>
+        body {
+            font-family: "Geist", "Geist Fallback", sans-serif;
+            /*background: #f1f1f1;*/
+            background: white;
+        }
+    </style>
+    <meta name="title" content="Minipad">
+    <meta name="description" content="A fast and lightweight modern recreation of the classic Win32 notepad, with tabs and line numbers.">
+    <meta name="keywords" content="notepad,editor,win32,windows,windows11">
+    <meta name="robots" content="index, follow">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="language" content="English">
+    <meta name="author" content="Philip Andersen (renegadevi)">
+    <meta name="url" content="minipad-editor.vercel.app">
+    <meta name="image" content="icon.png">
+    <meta name="og:title" content="Minipad">
+    <meta name="og:description" content="A fast and lightweight modern recreation of the classic Win32 notepad, with tabs and line numbers.">
+    <meta name="og:image" content="https://minipad-editor.vercel.app/icon.png">
+    <meta name="og:url" content="https://minipad-editor.vercel.app">
+    <meta name="og:type" content="website">
+    <meta name="og:locale" content="en_US">
+    <meta name="og:site_name" content="Minipad">
+    <meta name="og:image:width" content="128">
+    <meta name="og:image:height" content="128">
+    <meta name="og:image:alt" content="Minipad">
+    <!-- Privacy-friendly analytics by Plausible -->
+<script async src="https://plausible.io/js/pa-VIWsMttzNGz5x_R4ykrCr.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+</head>
+
+<body>
+    <!-- Version update banner (hidden by default, shown via JS) -->
+    <div id="update-banner" class="hidden fixed top-0 left-0 right-0 z-50 bg-blue-900 text-white text-sm text-center py-2.5 px-4 shadow-md">
+        <span id="update-banner-text"></span>
+        <a id="update-banner-link" href="#" class="underline font-medium ml-1 hover:text-blue-200">Download latest version</a>
+        <button onclick="document.getElementById('update-banner').classList.add('hidden')" class="ml-3 text-white/70 hover:text-white transition-colors">✕</button>
+    </div>
+
+    <main class="min-h-screen flex flex-col items-center justify-center px-6 py-16 gap-12">
+        <div class="grid lg:grid-cols-2 gap-6">
+        <div class="flex flex-col items-center text-center gap-6 max-w-2xl">
+            <div class="w-32 h-32 rounded-xl flex items-center justify-center bg-white">
+                <img src="icon.png" alt="Minipad">
+            </div>
+            <div class="space-y-3">
+                <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-foreground text-balance">Minipad</h1>
+                <p class="text-lg text-gray-700 max-w-md mx-auto leading-relaxed">A fast and lightweight modern recreation of the classic Win32 notepad, with tabs and line numbers.<br><br>
+                     0.1 MB portable executable file</p>
+            </div>
+            <!-- Split Download Button -->
+            <div class="relative inline-flex" id="download-dropdown">
+                <a id="download-btn" href="#"
+                    class="bg-blue-900 hover:bg-blue-800 text-white inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all h-10 rounded-l-md gap-2 px-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-monitor w-4 h-4">
+                        <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+                        <line x1="8" x2="16" y1="21" y2="21"></line>
+                        <line x1="12" x2="12" y1="17" y2="21"></line>
+                    </svg>Download for Windows
+                </a>
+                <button type="button" onclick="toggleDropdown()" 
+                    class="bg-blue-900 hover:bg-blue-800 text-white inline-flex items-center justify-center h-10 px-3 rounded-r-md border-l border-blue-700 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <!-- Dropdown Menu (populated by JS) -->
+                <div id="dropdown-menu" class="hidden absolute top-full right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-[200px]">
+                    <div class="py-1" id="dropdown-versions">
+                        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Previous Versions</div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600" id="version-info"></p>
+            
+        </div>
+        <div class="w-full max-w-2xl">
+            <div class="rounded-lg border border-border overflow-hidden shadow-xl"><img alt="AppName screenshot"
+                    src="screenshot.png">
+            </div>
+        </div>
+</div>
+        <p class="text-sm text-gray-500 pt-12">Copyright © <script>document.write(new Date().getFullYear());</script>
+            - Developed by <a href="https://philipandersen.se" class="text-blue-900 hover:text-blue-800">Philip Andersen (renegadevi)</a></p>
+    </main>
+
+    <script>
+        const VERSIONS = [
+            { version: "1.1.0", date: "2026-02-08" },
+            { version: "1.0.3", date: "2026-02-01" },
+            { version: "1.0.2", date: "2026-02-01" },
+            { version: "1.0.1", date: "2026-01-12" },
+            { version: "1.0.0", date: "2026-01-12" }
+        ];
+
+        // Download URL pattern — override per-entry with a `url` property if needed
+        function downloadUrl(version) {
+            return `bin/Minipad_v${version}.zip`;
+        }
+
+        function parseVersion(str) {
+            const m = /^(\d+)\.(\d+)\.(\d+)$/.exec(str);
+            return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
+        }
+
+        function compareVersions(a, b) {
+            const pa = parseVersion(a);
+            const pb = parseVersion(b);
+            if (!pa || !pb) return 0;
+            for (let i = 0; i < 3; i++) {
+                if (pa[i] > pb[i]) return 1;
+                if (pa[i] < pb[i]) return -1;
+            }
+            return 0;
+        }
+
+        // populate page content
+        (function init() {
+            // Sort descending by version so the highest is always first
+            const sorted = VERSIONS.slice().sort(function (a, b) {
+                return compareVersions(b.version, a.version);
+            });
+            const latest = sorted[0];
+            const previous = sorted.slice(1);
+
+            // Main download button
+            const downloadBtn = document.getElementById("download-btn");
+            downloadBtn.href = latest.url || downloadUrl(latest.version);
+
+            // Version info line
+            const versionInfo = document.getElementById("version-info");
+            versionInfo.innerHTML =
+                `Version ${latest.version} \u2022 <a class="text-blue-900 hover:text-blue-800" href="changelog.txt">Changelog</a> \u2022 Freeware`;
+
+            // Dropdown — previous versions
+            const dropdownVersions = document.getElementById("dropdown-versions");
+            previous.forEach(function (entry) {
+                const a = document.createElement("a");
+                a.href = entry.url || downloadUrl(entry.version);
+                a.className = "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors";
+                a.innerHTML = `v${entry.version} <span class="text-gray-400">(${entry.date})</span>`;
+                dropdownVersions.appendChild(a);
+            });
+
+            // =====================================================================
+            // Version check via URL parameter  ?version=x.y.z
+            // =====================================================================
+            const params = new URLSearchParams(window.location.search);
+            const userVersion = params.get("version");
+
+            if (userVersion && parseVersion(userVersion)) {
+                if (compareVersions(latest.version, userVersion) > 0) {
+                    // A newer version is available
+                    const banner = document.getElementById("update-banner");
+                    const bannerText = document.getElementById("update-banner-text");
+                    const bannerLink = document.getElementById("update-banner-link");
+
+                    bannerText.textContent =
+                        `You are using v${userVersion} \u2014 a newer version (v${latest.version}) is available!`;
+                    bannerLink.href = latest.url || downloadUrl(latest.version);
+                    banner.classList.remove("hidden");
+
+                    // Push main content down so the banner doesn't overlap
+                    document.querySelector("main").style.paddingTop = "3.5rem";
+                }
+            }
+        })();
+
+        // =====================================================================
+        // Dropdown toggle
+        // =====================================================================
+        function toggleDropdown() {
+            document.getElementById("dropdown-menu").classList.toggle("hidden");
+        }
+
+        document.addEventListener("click", function (event) {
+            const dropdown = document.getElementById("download-dropdown");
+            const menu = document.getElementById("dropdown-menu");
+            if (!dropdown.contains(event.target)) {
+                menu.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+
+</html>
